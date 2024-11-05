@@ -1,11 +1,36 @@
-import pandas as pd  # pip install kaggle
+import pandas as pd
 import kagglehub  # pip install kagglehub
-from urllib.request import urlopen  # pip install pgmpy
-from pgmpy.models import BayesianNetwork
+from pgmpy.models import BayesianNetwork # pip install pgmpy
 from pgmpy.inference import VariableElimination
-import Entrada as entrada
 
-# Função para discretizar a RendaAnual
+def DownloadTabela():
+    path = kagglehub.dataset_download("laotse/credit-risk-dataset")
+    return path
+
+def CriarModelo(dados):
+
+    modelo = BayesianNetwork([
+    ('GrauEmprestimo', 'RendaAnual'),
+    ('GrauEmprestimo', 'PropriedadeCasa')
+    ])
+    
+    modelo.fit(dados)
+    inferencia = VariableElimination(modelo)
+    return inferencia
+
+def AbrirTabela():
+
+    path = DownloadTabela()
+    arquivo = path + "/credit_risk_dataset.csv"
+    temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,históricoCredito"
+    colunas = temp.split(',')
+    dados = pd.read_csv(arquivo, names=colunas, skiprows=1)
+
+    dados['RendaAnual'] = dados['RendaAnual'].apply(discretizar_renda_anual)
+    
+    inferencia = CriarModelo(dados)
+    return inferencia
+
 def discretizar_renda_anual(valor):
     if valor < 5000:
         return 'baixa'
@@ -14,27 +39,9 @@ def discretizar_renda_anual(valor):
     else:
         return 'alta'
 
-# Download do dataset mais recente
-path = kagglehub.dataset_download("laotse/credit-risk-dataset")
-print("Path to dataset files:", path)
+def Pesquisa(renda,imovel):
+    inferencia = AbrirTabela()
+    resultado = inferencia.query(['GrauEmprestimo'], evidence={'RendaAnual': discretizar_renda_anual(renda), 'PropriedadeCasa': imovel})
+    print(resultado)
 
-arquivo = path + "/credit_risk_dataset.csv"
-temp = "Idade,RendaAnual,PropriedadeCasa,Duração do emprego (em anos),Intenção de empréstimo,GrauEmpréstimo,Valor do empréstimo,Taxa de juro,Status do empréstimo,Renda percentual,Inadimplência histórica,histórico de crédito"
-colunas = temp.split(',')
-dados = pd.read_csv(arquivo, names=colunas, skiprows=1)
-
-# Discretizando a coluna 'RendaAnual' do dataset
-dados['RendaAnual'] = dados['RendaAnual'].apply(discretizar_renda_anual)
-
-# Construção do modelo BayesianNetwork
-modelo = BayesianNetwork([
-    ('GrauEmpréstimo', 'RendaAnual'),
-    ('GrauEmpréstimo', 'PropriedadeCasa')
-])
-
-modelo.fit(dados)
-inferencia = VariableElimination(modelo)
-
-# Realizando a inferência
-result_dist = inferencia.query(['GrauEmpréstimo'], evidence={'RendaAnual': discretizar_renda_anual(entrada.renda), 'PropriedadeCasa': entrada.imovel})
-print(result_dist)
+Pesquisa(10000,'RENT')
