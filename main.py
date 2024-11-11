@@ -1,6 +1,6 @@
 import pandas as pd
-import kagglehub  # pip install kagglehub
-from pgmpy.models import BayesianNetwork # pip install pgmpy
+import kagglehub
+from pgmpy.models import BayesianNetwork
 from pgmpy.inference import VariableElimination
 
 def DownloadTabela():
@@ -11,7 +11,14 @@ def CriarModelo(dados):
 
     modelo = BayesianNetwork([
     ('GrauEmprestimo', 'RendaAnual'),
-    ('GrauEmprestimo', 'PropriedadeCasa')
+    ('GrauEmprestimo', 'PropriedadeCasa'),
+    ('GrauEmprestimo', 'DuracaoEmprego'),
+    ('GrauEmprestimo', 'IntencaoEmprestimo'),
+    ('GrauEmprestimo', 'ValorEmprestimo'),
+    ('GrauEmprestimo', 'TaxaJuro'),
+    ('GrauEmprestimo', 'StatusEmprestimo'),
+    ('GrauEmprestimo', 'RendaPercentual'),
+    ('GrauEmprestimo', 'InadimplênciaHistórica'),
     ])
     
     modelo.fit(dados)
@@ -25,9 +32,9 @@ def AbrirTabela():
     temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,históricoCredito"
     colunas = temp.split(',')
     dados = pd.read_csv(arquivo, names=colunas, skiprows=1)
-    # print(dados)
 
     dados['RendaAnual'] = dados['RendaAnual'].apply(discretizar_renda_anual)
+    #discretizar demais colunas
     
     inferencia = CriarModelo(dados)
     return inferencia
@@ -39,11 +46,13 @@ def discretizar_renda_anual(valor):
         return 'media'
     else:
         return 'alta'
+    
+# criar funções para discretizar demais colunas
 
-def Pesquisa(renda,imovel):
+def Pesquisa(renda,imovel,duracaoEmprego,intencao,valor,taxaJuro,status,inadimplencia):
     inferencia = AbrirTabela()
-    resultado = inferencia.query(['GrauEmprestimo'], evidence={'RendaAnual': discretizar_renda_anual(renda), 'PropriedadeCasa': imovel})
-    # print(resultado)
+    percentualRenda = valor/renda
+    resultado = inferencia.query(['GrauEmprestimo'], evidence={'RendaAnual': discretizar_renda_anual(renda), 'PropriedadeCasa': imovel, 'DuracaoEmprego': duracaoEmprego, 'IntencaoEmprestimo': intencao, 'ValorEmprestimo': valor, 'TaxaJuro': taxaJuro, 'StatusEmprestimo': status, 'RendaPercentual': percentualRenda, 'InadimplênciaHistórica': inadimplencia})
     emprestimo = PossivelEmprestimo(resultado)
     return emprestimo
 
@@ -57,6 +66,3 @@ def PossivelEmprestimo(reps):
         return True;
     else:
         return False;
-
-saida = Pesquisa(80,'RENT')
-print(saida)
