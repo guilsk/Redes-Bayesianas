@@ -13,7 +13,7 @@ Valores: {N (sem calote), Y (calote)}
 Tipo: Número inteiro
 Valores: 0 <= x
 ### Tempo empregado (em anos) - person_emp_length:
-Tipo: Número real
+Tipo: Número inteiro
 Valores: 0 <= x
 ### Montante do empréstimo - loan_amnt:
 Tipo: Número inteiro
@@ -21,9 +21,6 @@ Valores: 0 < x
 ### Taxa de juro:
 Tipo: Número real
 Valores: 1 < x
-### Porcentagem do montante do empréstimo em relação à renda - loan_percent_income:
-Tipo: Número real
-Valores: 0 < x <= 1
 
 ## Variáveis categóricas:
 ### Posse de imóveis - person_home_ownership:
