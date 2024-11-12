@@ -3,6 +3,8 @@ import discretizacao as d
 import pandas as pd
 from pgmpy.models import BayesianNetwork
 from pgmpy.inference import VariableElimination
+#import numpy as np
+#np.seterr(divide='ignore', invalid='ignore')
 
 def CriarModelo(dados):
 
@@ -17,14 +19,13 @@ def CriarModelo(dados):
     ('GrauEmprestimo', 'RendaPercentual'),
     ('GrauEmprestimo', 'InadimplênciaHistórica'),
     ])
-    
     modelo.fit(dados)
     inferencia = VariableElimination(modelo)
     return inferencia
 
 def AbrirTabela():
-    arquivo = "/credit_risk_dataset.csv"
-    temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,históricoCredito"
+    arquivo = "Backend\Dados\credit_risk_dataset_discrete.csv"
+    temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,HistóricoCredito"
     colunas = temp.split(',')
     dados = pd.read_csv(arquivo, names=colunas, skiprows=1)
     inferencia = CriarModelo(dados)
@@ -32,22 +33,29 @@ def AbrirTabela():
 
 inferencia = AbrirTabela()
 
-def Pesquisa(renda,imovel,duracaoEmprego,intencao,valor,taxaJuro,status,inadimplencia):
-    percentualRenda = valor/renda
-    resultado = inferencia.query(['GrauEmprestimo'], evidence={'RendaAnual': d.discretizar_renda_anual(renda), 'PropriedadeCasa': imovel, 'DuracaoEmprego': duracaoEmprego, 'IntencaoEmprestimo': intencao, 'ValorEmprestimo': valor, 'TaxaJuro': taxaJuro, 'StatusEmprestimo': status, 'RendaPercentual': percentualRenda, 'InadimplênciaHistórica': inadimplencia})
+def Pesquisa(inputData: model.InputData):
+    percentualRenda = round(inputData.valor/inputData.renda, 2)
+    resultado = inferencia.query(['GrauEmprestimo'], evidence={'RendaAnual': d.discretizar_renda_anual(inputData.renda), 'PropriedadeCasa': d.discretizar_posse_imovel(inputData.posseImoveis), 'DuracaoEmprego': d.discretizar_duracao_emprego(inputData.tempoEmpregado), 'IntencaoEmprestimo': d.discretizar_intencao(inputData.intencao), 'ValorEmprestimo': d.discretizar_valor_emprestimo(inputData.valor), 'TaxaJuro': d.discretizar_taxa_juros(inputData.taxaJuros), 'StatusEmprestimo': d.discretizar_status(inputData.statusCalote), 'RendaPercentual': d.discretizar_porcentagem_renda(percentualRenda), 'InadimplênciaHistórica': d.discretizar_historico_inadimplencia(inputData.caloteHistorico)})
     emprestimo = PossivelEmprestimo(resultado)
     return emprestimo
 
-def Pesquisa(inputData: model.InputData):
-    return Pesquisa(inputData.renda, inputData.posseImoveis, inputData.tempoEmpregado, inputData.intencao, inputData.valor, inputData.taxaJuros, inputData.statusCalote, inputData.caloteHistorico)
-
 def PossivelEmprestimo(reps):
+    print(reps)
+    #'''
+    if reps.values[0] >= 0.6:
+        return True
+    return False
+    '''
     valor = 0
     for i in range(3):
         valor += reps.values[i]
     valor = valor*100
 
     if valor > 60.0:
-        return True;
+        return True
     else:
-        return False;
+        return False
+    #'''
+
+modelo = model.InputData(valor = 1600, renda = 10000,tempoEmpregado = 6, taxaJuros = 14.74, statusCalote = True, caloteHistorico = False, posseImoveis = 'OWN', intencao = 'VENTURE')
+print(Pesquisa(modelo))

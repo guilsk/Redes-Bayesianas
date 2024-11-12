@@ -12,7 +12,7 @@ class InputData(BaseModel):
     caloteHistorico: bool # false: Não há registro de calote || true: Há registro de calote
 
     posseImoveis: Literal['OWN','RENT','MORTGAGE','OTHER']
-    intencao: Literal['EDUCATION','HOMEIMPROVEMENT','MEDICAL','PERSONAL','VENTURE']
+    intencao: Literal['EDUCATION','HOMEIMPROVEMENT','MEDICAL','PERSONAL','VENTURE','DEBTCONSOLIDATION']
 
 
 class OutputData(BaseModel):
