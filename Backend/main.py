@@ -3,6 +3,7 @@ import discretizacao as d
 import pandas as pd
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pgmpy.models import BayesianNetwork
 from pgmpy.inference import VariableElimination
 #import numpy as np
@@ -26,7 +27,7 @@ def CriarModelo(dados):
     return inferencia
 
 def AbrirTabela():
-    arquivo = "Backend\Dados\credit_risk_dataset_discrete.csv"
+    arquivo = "Backend/Dados/credit_risk_dataset_discrete.csv"
     temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,HistóricoCredito"
     colunas = temp.split(',')
     dados = pd.read_csv(arquivo, names=colunas, skiprows=1)
@@ -65,8 +66,15 @@ print(Pesquisa(modelo))
 #API
 #Endereço da documentação API: http://localhost:8000/docs#
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permitir qualquer origem. Você pode especificar uma lista, ex: ["http://localhost:4200"]
+    allow_credentials=True,
+    allow_methods=["*"],  # Permitir todos os métodos HTTP, ex: GET, POST, PUT, DELETE
+    allow_headers=["*"],  # Permitir todos os cabeçalhos
+)
 #Endpoint
 @app.post("/VerificarCredito", tags=["Rede Bayesiana"])
-def  Pesquisa(input: model.InputData) -> bool: return Pesquisa(input)
+def  VerificarCredito(input: model.InputData) -> bool: return Pesquisa(input)
 if( __name__ == "__main__"): uvicorn.run(app,port=8000)
 
