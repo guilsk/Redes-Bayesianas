@@ -19,4 +19,4 @@ def DiscretizarColunas(arquivo):
     #discretizar demais colunas
     dados.to_csv(arquivo[:-4]+'_discrete.csv', index=False)
 
-DiscretizarColunas("Backend\Dados\credit_risk_dataset.csv")
+DiscretizarColunas("./Dados/credit_risk_dataset.csv")

@@ -27,7 +27,7 @@ def CriarModelo(dados):
     return inferencia
 
 def AbrirTabela():
-    arquivo = "Backend/Dados/credit_risk_dataset_discrete.csv"
+    arquivo = "./Dados/credit_risk_dataset_discrete.csv"
     temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,HistóricoCredito"
     colunas = temp.split(',')
     dados = pd.read_csv(arquivo, names=colunas, skiprows=1)
