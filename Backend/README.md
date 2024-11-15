@@ -39,3 +39,8 @@ Valores:
 
 
 ### Imports necessários: kagglehub / pgmpy / uvicorn / FastAPI
+
+```cmd
+pip install -r requirements.txt
+```
+> Rode o comando acima para importar os módulos necessários.

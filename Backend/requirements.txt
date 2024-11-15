@@ -1,0 +1,7 @@
+# requirements.txt
+
+kagglehub
+pgmpy
+uvicorn
+fastapi
+pydantic
