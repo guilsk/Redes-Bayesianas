@@ -36,3 +36,6 @@ Valores:
 * MEDICAL
 * PERSONAL
 * VENTURE
+
+
+### Imports necessários: kagglehub / pgmpy / uvicorn / FastAPI
