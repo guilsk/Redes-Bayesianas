@@ -1,6 +1,8 @@
 import model
 import discretizacao as d
 import pandas as pd
+import uvicorn
+from fastapi import FastAPI
 from pgmpy.models import BayesianNetwork
 from pgmpy.inference import VariableElimination
 #import numpy as np
@@ -59,3 +61,12 @@ def PossivelEmprestimo(reps):
 
 modelo = model.InputData(valor = 1600, renda = 10000,tempoEmpregado = 6, taxaJuros = 14.74, statusCalote = True, caloteHistorico = False, posseImoveis = 'OWN', intencao = 'VENTURE')
 print(Pesquisa(modelo))
+
+#API
+#Endereço da documentação API: http://localhost:8000/docs#
+app = FastAPI()
+#Endpoint
+@app.post("/VerificarCredito", tags=["Rede Bayesiana"])
+def  Pesquisa(input: model.InputData) -> bool: return Pesquisa(input)
+if( __name__ == "__main__"): uvicorn.run(app,port=8000)
+
