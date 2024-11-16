@@ -39,6 +39,7 @@ $primary-color: #4CAF50;
         }
     
         input,
+        select,
         textarea {
             padding: 10px;
             margin-bottom: 15px;
@@ -46,7 +47,11 @@ $primary-color: #4CAF50;
             border-radius: 4px;
             font-size: 16px;
         }
-    
+
+        select {
+            width: 100%;
+        }
+        
         .button-submit {
             width: 100%;
             margin-top: 10px;
@@ -71,5 +76,20 @@ $primary-color: #4CAF50;
                 width: 100%;
             }
         }
+
     }
+    .result-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .success {
+        color: green;
+        font-weight: bold;
+    }
+    
+    .error {
+        color: red;
+        font-weight: bold;
+    }        
 }

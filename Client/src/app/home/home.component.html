@@ -1,45 +1,68 @@
-<section class="home">  
-    <!-- Navbar -->
+<section class="home">
     <div class="toolbar" role="banner">
         <img width="40" alt="Logo" src="https://avatars.githubusercontent.com/u/4505864?s=200&v=4" />
         <span>Banco redes Bayesianas</span>
         <div class="spacer"></div>
-    
         <a aria-label="Trabalho no github" target="_blank" rel="noopener" href="https://github.com/guilsk/Redes-Bayesianas" title="Github"></a>
     </div>
 
-    <!-- Container -->
     <div class="form-container">
-        <form action="#" method="post">
-            <label>Renda:</label>
-            <input type="number"placeholder="Em reais" required />
-    
-            <label>Tempo empregado:</label>
-            <input type="number" placeholder="Em anos"required />
-    
-            <label>Montante do empréstimo:</label>
-            <input type="number" placeholder="Em reais" required />
-    
-            <label>Posse de imóveis:</label>
-            <select class="dropdown-imoveis">
-                <option value="own">Própria</option>
-                <option value="rent">Alugada</option>
-                <option value="mortgage">Hipoteca</option>
-                <option value="other">Outro</option>
-            </select>
+        <form [formGroup]="form" (ngSubmit)="postData()">
+            <label>Valor do Empréstimo:</label>
+            <input type="number" formControlName="valor" min="1" placeholder="Em reais" required />
             
+            <label>Renda:</label>
+            <input type="number" formControlName="renda" min="1" placeholder="Em reais" required />
+            
+            <label>Tempo Empregado:</label>
+            <input type="number" formControlName="tempoEmpregado" min="0" placeholder="Em anos" required />
+
+            <label>Taxa de Juros:</label>
+            <input type="number" formControlName="taxaJuros" min="1" placeholder="Em porcentagem" required />
+
+            <label>
+                Status Calote?
+                <input type="checkbox" formControlName="statusCalote" />
+            </label>
+
+            <label>
+                Tem Histórico de Calote?
+                <input type="checkbox" formControlName="caloteHistorico" />
+            </label>
+
+            <label>Posse de imóveis:</label>
+            <select formControlName="posseImoveis">
+                <option value="OWN">Própria</option>
+                <option value="RENT">Alugada</option>
+                <option value="MORTGAGE">Hipoteca</option>
+                <option value="OTHER">Outro</option>
+            </select>
+
             <label>Intenção do empréstimo:</label>
-            <select class="dropdown-emprestimo">
-                <option value="education">Educação</option>
-                <option value="homeimprovement">Melhoria da casa</option>
-                <option value="medical">Médica</option>
-                <option value="personal">Pessoal</option>
-                <option value="venture">Empreendimento</option>
+            <select formControlName="intencao">
+                <option value="EDUCATION">Educação</option>
+                <option value="HOMEIMPROVEMENT">Melhoria da casa</option>
+                <option value="MEDICAL">Médica</option>
+                <option value="PERSONAL">Pessoal</option>
+                <option value="VENTURE">Empreendimento</option>
             </select>
 
             <div class="button-submit">
-                <button type="submit" (click)="postData()">Enviar</button>
+                <button type="submit">Enviar</button>
             </div>
         </form>
+    </div>
+
+    <!-- Resultados -->
+    <div class="result-container">
+        <div *ngIf="result === true" class="success">
+            <p>O empréstimo foi aprovado!</p>
+        </div>
+        <div *ngIf="result === false" class="error">
+            <p>O empréstimo foi negado.</p>
+        </div>
+        <div *ngIf="hasError" class="error">
+            <p>Os dados não estão corretos. Verifique e tente novamente.</p>
+        </div>
     </div>
 </section>
