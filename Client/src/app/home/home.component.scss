@@ -10,10 +10,16 @@ $primary-color: #4CAF50;
     
     .toolbar {
         display: flex;
-        justify-content: start;
+        justify-content: space-between;
         align-items: center;
         background-color: #333;
         color: #ddd;
+        padding-right: 1rem;
+
+        .tittle {
+            display: flex;
+            align-items: center;
+        }
     }
     
     .form-container {
