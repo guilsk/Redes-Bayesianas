@@ -1,3 +1,5 @@
+#Pega os valores do arquivo original csv e transforma em numeros para a rede funcionar
+
 def discretizar_resultado(valor):
     if valor == 'A' or valor == 'B' or valor == 'C':
         return 1
@@ -43,14 +45,14 @@ def discretizar_valor_emprestimo(valor):
         return 5
     
 def discretizar_taxa_juros(valor):
-    if valor < 10:
-        return 1
+    if valor < 5:
+        return 4
+    elif valor < 10:
+        return 3
     elif valor < 15:
         return 2
-    elif valor < 20:
-        return 3
     else:
-        return 4
+        return 1
     
 def discretizar_duracao_emprego(valor):
     if valor < 7:

@@ -1,6 +1,8 @@
 import pandas as pd
 import discretizacao as d
 
+#Metado para descretizar o arquivo original e criar um novo descretizado
+
 def DiscretizarColunas(arquivo):
     temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,HistóricoCredito"
     colunas = temp.split(',')

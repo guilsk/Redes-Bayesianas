@@ -9,6 +9,7 @@ from pgmpy.inference import VariableElimination
 #import numpy as np
 #np.seterr(divide='ignore', invalid='ignore')
 
+#Criação da Rede Bayesiana
 def CriarModelo(dados):
 
     modelo = BayesianNetwork([
@@ -26,6 +27,7 @@ def CriarModelo(dados):
     inferencia = VariableElimination(modelo)
     return inferencia
 
+#Ler o arquivo csv  
 def AbrirTabela():
     arquivo = "Server/Dados/credit_risk_dataset_discrete.csv"
     temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,HistóricoCredito"
@@ -34,34 +36,22 @@ def AbrirTabela():
     inferencia = CriarModelo(dados)
     return inferencia
 
+#Recebe a tabela
 inferencia = AbrirTabela()
 
+#Realiza a pesquisa na rede
 def Pesquisa(inputData: model.InputData):
     percentualRenda = round(inputData.valor/inputData.renda, 2)
     resultado = inferencia.query(['GrauEmprestimo'], evidence={'RendaAnual': d.discretizar_renda_anual(inputData.renda), 'PropriedadeCasa': d.discretizar_posse_imovel(inputData.posseImoveis), 'DuracaoEmprego': d.discretizar_duracao_emprego(inputData.tempoEmpregado), 'IntencaoEmprestimo': d.discretizar_intencao(inputData.intencao), 'ValorEmprestimo': d.discretizar_valor_emprestimo(inputData.valor), 'TaxaJuro': d.discretizar_taxa_juros(inputData.taxaJuros), 'StatusEmprestimo': d.discretizar_status(inputData.statusCalote), 'RendaPercentual': d.discretizar_porcentagem_renda(percentualRenda), 'InadimplênciaHistórica': d.discretizar_historico_inadimplencia(inputData.caloteHistorico)})
     emprestimo = PossivelEmprestimo(resultado)
     return emprestimo
 
+#Calcula o resultado final
 def PossivelEmprestimo(reps):
     print(reps)
-    #'''
-    if reps.values[0] >= 0.6:
+    if reps.values[0] >= 0.7:
         return True
     return False
-    '''
-    valor = 0
-    for i in range(3):
-        valor += reps.values[i]
-    valor = valor*100
-
-    if valor > 60.0:
-        return True
-    else:
-        return False
-    #'''
-
-modelo = model.InputData(valor = 1600, renda = 10000,tempoEmpregado = 6, taxaJuros = 14.74, statusCalote = True, caloteHistorico = False, posseImoveis = 'OWN', intencao = 'VENTURE')
-print(Pesquisa(modelo))
 
 #API
 #Endereço da documentação API: http://localhost:8000/docs#
