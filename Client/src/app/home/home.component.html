@@ -7,17 +7,17 @@
         <a aria-label="Trabalho no github" target="_blank" rel="noopener" href="https://github.com/guilsk/Redes-Bayesianas" title="Github">
             <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="30" style="filter:invert(1);"/>
         </a>
-        
+
     </div>
 
     <div class="form-container">
         <form [formGroup]="form" (ngSubmit)="postData()">
             <label>Valor do Empréstimo:</label>
             <input type="number" formControlName="valor" min="1" placeholder="Em reais" required />
-            
-            <label>Renda:</label>
+
+            <label>Renda Anual:</label>
             <input type="number" formControlName="renda" min="1" placeholder="Em reais" required />
-            
+
             <label>Tempo Empregado:</label>
             <input type="number" formControlName="tempoEmpregado" min="0" placeholder="Em anos" required />
 
