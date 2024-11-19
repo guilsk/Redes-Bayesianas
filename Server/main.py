@@ -42,7 +42,10 @@ inferencia = AbrirTabela()
 #Realiza a pesquisa na rede
 def Pesquisa(inputData: model.InputData):
     percentualRenda = round(inputData.valor/inputData.renda, 2)
-    resultado = inferencia.query(['GrauEmprestimo'], evidence={'RendaAnual': d.discretizar_renda_anual(inputData.renda), 'PropriedadeCasa': d.discretizar_posse_imovel(inputData.posseImoveis), 'DuracaoEmprego': d.discretizar_duracao_emprego(inputData.tempoEmpregado), 'IntencaoEmprestimo': d.discretizar_intencao(inputData.intencao), 'ValorEmprestimo': d.discretizar_valor_emprestimo(inputData.valor), 'TaxaJuro': d.discretizar_taxa_juros(inputData.taxaJuros), 'StatusEmprestimo': d.discretizar_status(inputData.statusCalote), 'RendaPercentual': d.discretizar_porcentagem_renda(percentualRenda), 'InadimplênciaHistórica': d.discretizar_historico_inadimplencia(inputData.caloteHistorico)})
+    try:
+        resultado = inferencia.query(['GrauEmprestimo'], evidence={'RendaAnual': d.discretizar_renda_anual(inputData.renda), 'PropriedadeCasa': d.discretizar_posse_imovel(inputData.posseImoveis), 'DuracaoEmprego': d.discretizar_duracao_emprego(inputData.tempoEmpregado), 'IntencaoEmprestimo': d.discretizar_intencao(inputData.intencao), 'ValorEmprestimo': d.discretizar_valor_emprestimo(inputData.valor), 'TaxaJuro': d.discretizar_taxa_juros(inputData.taxaJuros), 'StatusEmprestimo': d.discretizar_status(inputData.statusCalote), 'RendaPercentual': d.discretizar_porcentagem_renda(percentualRenda), 'InadimplênciaHistórica': d.discretizar_historico_inadimplencia(inputData.caloteHistorico)})
+    except:
+        return False
     emprestimo = PossivelEmprestimo(resultado)
     return emprestimo
 

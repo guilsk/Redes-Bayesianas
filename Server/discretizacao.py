@@ -1,85 +1,66 @@
 #Pega os valores do arquivo original csv e transforma em numeros para a rede funcionar
+import numpy as np
+import pandas as pd
+
+arquivo = "Server/Dados/credit_risk_dataset.csv"
+temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,HistóricoCredito"
+colunas = temp.split(',')
+dados = pd.read_csv(arquivo, names=colunas, skiprows=1).dropna()
 
 def discretizar_resultado(valor):
-    if valor == 'A' or valor == 'B' or valor == 'C':
-        return 1
-    else:
-        return 2
+    return discretizar_categorico(valor, 'GrauEmprestimo')
 
 def discretizar_renda_anual(valor):
-    if valor < 10000:
-        return 1
-    elif valor < 30000:
-        return 2
-    elif valor < 50000:
-        return 3
-    elif valor < 100000:
-        return 4
-    elif valor < 200000:
-        return 5
-    else:
-        return 6
+    return discretizar_numerico(valor, 'RendaAnual')
     
 def discretizar_porcentagem_renda(valor):
-    if valor < .1:
-        return 1
-    elif valor < .2:
-        return 2
-    elif valor < .3:
-        return 3
-    elif valor < .4:
-        return 4
-    else:
-        return 5
+    return discretizar_numerico(valor, 'RendaPercentual')
     
 def discretizar_valor_emprestimo(valor):
-    if valor < 5000:
-        return 1
-    elif valor < 10000:
-        return 2
-    elif valor < 20000:
-        return 3
-    elif valor < 25000:
-        return 4
-    else:
-        return 5
+    return discretizar_numerico(valor, 'ValorEmprestimo')
     
 def discretizar_taxa_juros(valor):
-    if valor < 10:
-        return 4
-    elif valor < 15:
-        return 3
-    elif valor < 20:
-        return 2
-    else:
-        return 1
+    return discretizar_numerico(valor, 'TaxaJuro')
     
 def discretizar_duracao_emprego(valor):
-    if valor < 7:
-        return 1
-    elif valor < 13:
-        return 2
-    else:
-        return 3
+    return discretizar_numerico(valor, 'DuracaoEmprego')
     
 def discretizar_status(valor):
-    if valor == 1 or valor == True:
-        return 1
-    elif valor == 0 or valor == False:
-        return 2
-    else:
-        return None
+    if valor == True:
+        valor = 1
+    if valor == False:
+        valor = 0
+    return discretizar_numerico(valor, 'StatusEmprestimo')
     
 def discretizar_historico_inadimplencia(valor):
-    if valor == 'Y' or valor == True:
-        return 1
-    elif valor == 'N' or valor == False:
-        return 2
-    else:
-        return None
+    if valor == True:
+        valor = 'Y'
+    if valor == False:
+        valor = 'N'
+    return discretizar_categorico(valor, 'InadimplênciaHistórica')
     
 def discretizar_posse_imovel(valor):
-    return ['OWN','RENT','MORTGAGE','OTHER'].index(valor)+1
+    return discretizar_categorico(valor, 'PropriedadeCasa')
 
 def discretizar_intencao(valor):
-    return ['EDUCATION','HOMEIMPROVEMENT','MEDICAL','PERSONAL','VENTURE','DEBTCONSOLIDATION'].index(valor)+1
+    return discretizar_categorico(valor, 'IntencaoEmprestimo')
+
+#'''
+def discretizar_numerico(valor, coluna):
+    n = len(dados[coluna])
+    k = int(np.ceil(1 + np.log2(n)))
+    bins = np.linspace(dados[coluna].min(), dados[coluna].max(), k + 1)
+    return np.digitize(valor, bins=bins, right=False)
+'''
+def discretizar_numerico(valor, vMin, vMax, k):
+    cat = 1
+    intervalo = (vMax-vMin)/k
+    vCat = vMin+intervalo
+    while valor > vCat:
+        cat += 1
+        vCat += intervalo
+    return cat
+#'''
+def discretizar_categorico(valor, coluna):
+    categorias = {cat: idx for idx, cat in enumerate(dados[coluna].unique())}
+    return categorias.get(valor, 0)+1
