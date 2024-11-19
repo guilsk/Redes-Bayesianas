@@ -29,7 +29,7 @@ def CriarModelo(dados):
 
 #Ler o arquivo csv  
 def AbrirTabela():
-    arquivo = "Dados/credit_risk_dataset_discrete.csv"
+    arquivo = "Server/Dados/credit_risk_dataset_discrete.csv"
     temp = "Idade,RendaAnual,PropriedadeCasa,DuracaoEmprego,IntencaoEmprestimo,GrauEmprestimo,ValorEmprestimo,TaxaJuro,StatusEmprestimo,RendaPercentual,InadimplênciaHistórica,HistóricoCredito"
     colunas = temp.split(',')
     dados = pd.read_csv(arquivo, names=colunas, skiprows=1)

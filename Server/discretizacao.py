@@ -45,11 +45,11 @@ def discretizar_valor_emprestimo(valor):
         return 5
     
 def discretizar_taxa_juros(valor):
-    if valor < 5:
+    if valor < 10:
         return 4
-    elif valor < 10:
-        return 3
     elif valor < 15:
+        return 3
+    elif valor < 20:
         return 2
     else:
         return 1
